@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Big4 Valuation Survival Kit</title>
+<style>
+  :root {
+    --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; 
+    --success: #22c55e; --danger: #ef4444; --gold: #fbbf24;
+  }
+  body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.5; }
+  .container { max-width: 1000px; margin: 0 auto; }
+  h1 { text-align: center; color: var(--gold); margin-bottom: 5px; }
+  .subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; font-size: 0.9rem; }
+  
+  /* Tabs */
+  .tabs { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; justify-content: center; }
+  .tab-btn { padding: 10px 20px; background: var(--card); border: 1px solid #334155; color: var(--text); cursor: pointer; border-radius: 8px; font-weight: bold; transition: 0.3s; }
+  .tab-btn.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+  .tab-content { display: none; animation: fadeIn 0.5s; }
+  .tab-content.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* Cards & Grids */
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .card { background: var(--card); padding: 20px; border-radius: 12px; border: 1px solid #334155; }
+  .card h3 { color: var(--accent); margin-top: 0; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+  
+  /* Formulas */
+  .formula { background: #0f172a; padding: 10px; border-radius: 6px; font-family: monospace; color: var(--gold); margin: 10px 0; font-size: 1.1rem; text-align: center;}
+  .rule { background: rgba(56, 189, 248, 0.1); border-left: 4px solid var(--accent); padding: 10px; margin: 10px 0; border-radius: 0 6px 6px 0; }
+  .trap { background: rgba(239, 68, 68, 0.1); border-left: 4px solid var(--danger); padding: 10px; margin: 10px 0; border-radius: 0 6px 6px 0; }
+
+  /* Calculators */
+  input { width: 100%; padding: 8px; margin: 5px 0; background: #0f172a; border: 1px solid #334155; color: var(--text); border-radius: 6px; box-sizing: border-box; }
+  .calc-result { font-size: 1.5rem; font-weight: bold; color: var(--success); text-align: center; margin-top: 15px; padding: 10px; background: rgba(34, 197, 94, 0.1); border-radius: 8px; }
+
+  /* Flashcards */
+  .flashcard { perspective: 1000px; height: 200px; cursor: pointer; margin-bottom: 20px; }
+  .flashcard-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; }
+  .flashcard.flipped .flashcard-inner { transform: rotateY(180deg); }
+  .flashcard-front, .flashcard-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; padding: 20px; border-radius: 12px; font-size: 1.1rem; box-sizing: border-box; }
+  .flashcard-front { background: var(--card); border: 2px solid var(--accent); color: var(--text); }
+  .flashcard-back { background: var(--accent); color: var(--bg); transform: rotateY(180deg); font-weight: bold; }
+
+  /* Quiz */
+  .quiz-q { margin-bottom: 20px; }
+  .quiz-opt { display: block; padding: 10px; background: #0f172a; margin: 5px 0; border-radius: 6px; cursor: pointer; border: 1px solid #334155; transition: 0.2s; }
+  .quiz-opt:hover { border-color: var(--accent); }
+  .quiz-opt.correct { background: rgba(34, 197, 94, 0.2); border-color: var(--success); }
+  .quiz-opt.wrong { background: rgba(239, 68, 68, 0.2); border-color: var(--danger); }
+  .explanation { display: none; margin-top: 10px; padding: 10px; background: rgba(251, 191, 36, 0.1); border-radius: 6px; color: var(--gold); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🚀 Big4 Valuation Survival Kit</h1>
+  <p class="subtitle">Тренажер для экспресс-подготовки к тесту (M&A / Valuation / FinMod)</p>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="openTab(event, 'cheatsheet')">🧠 Шпаргалка</button>
+    <button class="tab-btn" onclick="openTab(event, 'calculators')">🧮 Калькуляторы</button>
+    <button class="tab-btn" onclick="openTab(event, 'theory')">🃏 Связки (Flashcards)</button>
+    <button class="tab-btn" onclick="openTab(event, 'quiz')">🎯 Тест-ловушки</button>
+  </div>
+
+  <!-- TAB 1: CHEATSHEET -->
+  <div id="cheatsheet" class="tab-content active">
+    <div class="grid">
+      <div class="card">
+        <h3>📊 Мультипликаторы (Золотое правило)</h3>
+        <div class="rule"><b>EV (Стоимость бизнеса)</b> сочетается с показателями <b>ДО выплаты процентов</b> (EBITDA, EBIT, Revenue, Unlevered FCF).</div>
+        <div class="rule"><b>Equity Value (Цена акций / P)</b> сочетается с показателями <b>ПОСЛЕ процентов</b> (Net Income, Levered FCF, Book Value).</div>
+        <div class="trap">🚨 <b>ЛОВУШКА:</b> EV / Net Income — НЕВЕРНО! (Двойной учет долга).</div>
+        <div class="formula">EV = EqV + Debt - Cash + Min. Int. + Pref. Stock</div>
+      </div>
+      <div class="card">
+        <h3>💰 Денежные потоки (FCF)</h3>
+        <div class="formula">FCFF = EBIT * (1 - t) + D&A - CapEx - ΔNWC</div>
+        <div class="rule"><b>ΔNWC (Изменение оборотного капитала):</b><br>Рост Активов (Дебиторка, Запасы) = <b>ОТТОК (-)</b><br>Рост Обязательств (Кредиторка) = <b>ПРИТОК (+)</b></div>
+        <div class="formula">FCFE = FCFF - Проценты*(1-t) - Погашение долга + Новый долг</div>
+      </div>
+      <div class="card">
+        <h3>📉 Ставки дисконтирования</h3>
+        <div class="formula">CAPM: Ke = Rf + β * (Rm - Rf)</div>
+        <div class="formula">WACC = Ke*(E/V) + Kd*(1-t)*(D/V)</div>
+        <div class="rule"><b>Налоговый щит (1-t):</b> Проценты по долгу уменьшают налог, поэтому долг дешевле собственного капитала.</div>
+        <div class="rule"><b>Правило:</b> FCFF дисконтируем по WACC (получаем EV). FCFE дисконтируем по Ke (получаем EqV).</div>
+      </div>
+      <div class="card">
+        <h3>🏢 Подходы к оценке</h3>
+        <div class="rule"><b>1. Сравнительный (Relative):</b> Comps (биржа), Precedent Transactions (сделки M&A). Обычно Trans. > Comps из-за премии за контроль.</div>
+        <div class="rule"><b>2. Доходный (Intrinsic):</b> DCF. Зависит от допущений. Терминальная стоимость = 60-80% от EV.</div>
+        <div class="rule"><b>3. Затратный (Asset-based):</b> NAV, Ликвидационная. Для банков, недвижимости, банкротов.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: CALCULATORS -->
+  <div id="calculators" class="tab-content">
+    <div class="grid">
+      <div class="card">
+        <h3>Калькулятор EV (Стоимость бизнеса)</h3>
+        <label>Market Cap (Equity Value):</label><input type="number" id="mcap" value="1000" oninput="calcEV()">
+        <label>Долг (Debt):</label><input type="number" id="debt" value="200" oninput="calcEV()">
+        <label>Деньги (Cash):</label><input type="number" id="cash" value="100" oninput="calcEV()">
+        <div class="calc-result" id="evResult">EV = 1100</div>
+      </div>
+      <div class="card">
+        <h3>Калькулятор FCFF (Свободный поток)</h3>
+        <label>EBIT:</label><input type="number" id="ebit" value="500" oninput="calcFCF()">
+        <label>Ставка налога (t, %):</label><input type="number" id="tax" value="20" oninput="calcFCF()">
+        <label>Амортизация (D&A):</label><input type="number" id="da" value="100" oninput="calcFCF()">
+        <label>CapEx:</label><input type="number" id="capex" value="150" oninput="calcFCF()">
+        <label>Рост NWC (Отток = +):</label><input type="number" id="nwc" value="50" oninput="calcFCF()">
+        <div class="calc-result" id="fcfResult">FCFF = 450</div>
+      </div>
+      <div class="card">
+        <h3>Калькулятор WACC</h3>
+        <label>Доля Equity (E, %):</label><input type="number" id="eqPerc" value="70" oninput="calcWACC()">
+        <label>Стоимость Equity (Ke, %):</label><input type="number" id="ke" value="15" oninput="calcWACC()">
+        <label>Доля Debt (D, %):</label><input type="number" id="dbPerc" value="30" oninput="calcWACC()">
+        <label>Стоимость Debt (Kd, %):</label><input type="number" id="kd" value="8" oninput="calcWACC()">
+        <label>Налог (t, %):</label><input type="number" id="waccTax" value="20" oninput="calcWACC()">
+        <div class="calc-result" id="waccResult">WACC = 12.18%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: FLASHCARDS -->
+  <div id="theory" class="tab-content">
+    <p style="text-align:center; color: #94a3b8;">Кликни на карточку, чтобы увидеть ответ</p>
+    <div class="grid">
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">Как связаны 3 отчета?<br><small>(Покупка оборудования за 100$ в кредит)</small></div>
+          <div class="flashcard-back">P&L: Нет эффекта сразу. Позже: -Аморт, -Проценты.<br>CFS: -100 (Инвест), +100 (Финанс).<br>BS: +100 Активы (Оборуд), +100 Обяз-ва (Кредит).</div>
+        </div>
+      </div>
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">Что будет с EV и EqV,<br>если компания выпустит долг на 100 и положит на счет?</div>
+          <div class="flashcard-back">EV не изменится (+100 Долг, -100 Кэш в формуле сократятся).<br>EqV не изменится (это просто обмен бумаг на кэш внутри компании).</div>
+        </div>
+      </div>
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">Почему Precedent Transactions<br>обычно дают оценку ВЫШЕ, чем Public Comps?</div>
+          <div class="flashcard-back">Из-за Control Premium (Премия за контроль). Покупатель платит больше, чтобы получить 100% голосов и синергии.</div>
+        </div>
+      </div>
+      <div class="flashcard" onclick="this.classList.toggle('flipped')">
+        <div class="flashcard-inner">
+          <div class="flashcard-front">В чем разница между FCFF и FCFE?<br>И какие ставки для них?</div>
+          <div class="flashcard-back">FCFF (Unlevered) — для ВСЕХ инвесторов. Дисконт = WACC. Дает EV.<br>FCFE (Levered) — только для АКЦИОНЕРОВ. Дисконт = Cost of Equity. Дает EqV.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: QUIZ -->
+  <div id="quiz" class="tab-content">
+    <div class="card">
+      <h3>🎯 Тест на выживание (Big4 Traps)</h3>
+      <div id="quizContainer"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Tabs
+  function openTab(evt, tabName) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById(tabName).classList.add('active');
+    evt.currentTarget.classList.add('active');
+  }
+
+  // Calculators
+  function calcEV() {
+    let mcap = +document.getElementById('mcap').value || 0;
+    let debt = +document.getElementById('debt').value || 0;
+    let cash = +document.getElementById('cash').value || 0;
+    document.getElementById('evResult').innerText = `EV = ${mcap + debt - cash}`;
+  }
+  function calcFCF() {
+    let ebit = +document.getElementById('ebit').value || 0;
+    let tax = (+document.getElementById('tax').value || 0) / 100;
+    let da = +document.getElementById('da').value || 0;
+    let capex = +document.getElementById('capex').value || 0;
+    let nwc = +document.getElementById('nwc').value || 0;
+    let nopat = ebit * (1 - tax);
+    let fcf = nopat + da - capex - nwc;
+    document.getElementById('fcfResult').innerText = `FCFF = ${fcf.toFixed(1)}`;
+  }
+  function calcWACC() {
+    let eqP = (+document.getElementById('eqPerc').value || 0) / 100;
+    let ke = (+document.getElementById('ke').value || 0) / 100;
+    let dbP = (+document.getElementById('dbPerc').value || 0) / 100;
+    let kd = (+document.getElementById('kd').value || 0) / 100;
+    let t = (+document.getElementById('waccTax').value || 0) / 100;
+    let wacc = (eqP * ke) + (dbP * kd * (1 - t));
+    document.getElementById('waccResult').innerText = `WACC = ${(wacc * 100).toFixed(2)}%`;
+  }
+
+  // Quiz
+  const quizData = [
+    {
+      q: "Компания увеличила амортизацию (D&A) на 10$. Как это повлияет на FCFF (при прочих равных)?",
+      opts: ["FCFF упадет на 10$", "FCFF вырастет на 10$", "FCFF вырастет на 10$ * (1 - t)", "FCFF не изменится"],
+      correct: 2,
+      exp: "Амортизация — неденежный расход. Она уменьшает налог (создает налоговый щит), поэтому реальный денежный поток растет на сумму сэкономленного налога: D&A * (1-t)."
+    },
+    {
+      q: "Какой мультипликатор НЕЛЬЗЯ использовать?",
+      opts: ["EV / EBITDA", "P / E", "EV / Net Income", "EV / Unlevered FCF"],
+      correct: 2,
+      exp: "Золотое правило: EV (для всех инвесторов) сочетается с показателями ДО вычета процентов (EBITDA, EBIT). Net Income — это прибыль УЖЕ за вычетом процентов (только для акционеров). Правильно: P/E."
+    },
+    {
+      q: "Выросла Дебиторская задолженность (Accounts Receivable). Что происходит с Денежным потоком (CFO) и NWC?",
+      opts: ["Денежный поток растет, NWC падает", "Денежный поток падает, NWC растет", "Никак не влияет", "Денежный поток растет, NWC растет"],
+      correct: 1,
+      exp: "Дебиторка — это Актив. Рост операционного Актива = ОТТОК денег (мы отгрузили товар, но деньги еще не получили). NWC (Чистый оборотный капитал) при этом растет."
+    },
+    {
+      q: "Для оценки какого сектора НЕ подходит классический DCF (FCFF) и мультипликатор EV/EBITDA?",
+      opts: ["IT-стартапы", "Коммерческие банки", "Ритейл", "Производственный сектор"],
+      correct: 1,
+      exp: "Для банков долг — это не источник финансирования, а 'сырье' для бизнеса. Проценты — ключевая часть выручки. Для банков используют P/E, P/BV и Дивидендную модель (DDM)."
+    },
+    {
+      q: "Как изменится Enterprise Value (EV), если компания возьмет кредит на 100$ и положит деньги на расчетный счет?",
+      opts: ["EV вырастет на 100$", "EV упадет на 100$", "EV не изменится", "EV вырастет на 100$ * (1-t)"],
+      correct: 2,
+      exp: "EV = EqV + Debt - Cash. Долг вырос на 100, Кэш вырос на 100. Они сокращаются. EV отражает стоимость ОПЕРАЦИОННОГО бизнеса, а финансовые манипуляции с кэмом и долгом на нее не влияют."
+    }
+  ];
+
+  const quizContainer = document.getElementById('quizContainer');
+  quizData.forEach((item, index) => {
+    let qDiv = document.createElement('div');
+    qDiv.className = 'quiz-q';
+    qDiv.innerHTML = `<b>${index + 1}. ${item.q}</b>`;
+    item.opts.forEach((opt, i) => {
+      let optDiv = document.createElement('div');
+      optDiv.className = 'quiz-opt';
+      optDiv.innerText = opt;
+      optDiv.onclick = () => checkAnswer(optDiv, i, item.correct, qDiv, item.exp);
+      qDiv.appendChild(optDiv);
+    });
+    let expDiv = document.createElement('div');
+    expDiv.className = 'explanation';
+    expDiv.innerText = "💡 " + item.exp;
+    qDiv.appendChild(expDiv);
+    quizContainer.appendChild(qDiv);
+  });
+
+  function checkAnswer(el, selected, correct, parent, exp) {
+    parent.querySelectorAll('.quiz-opt').forEach(o => o.style.pointerEvents = 'none');
+    if (selected === correct) {
+      el.classList.add('correct');
+    } else {
+      el.classList.add('wrong');
+      parent.querySelectorAll('.quiz-opt')[correct].classList.add('correct');
+    }
+    parent.querySelector('.explanation').style.display = 'block';
+  }
+</script>
+</body>
+</html>
